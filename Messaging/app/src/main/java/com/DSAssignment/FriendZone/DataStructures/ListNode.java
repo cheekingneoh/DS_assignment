@@ -1,4 +1,4 @@
-package com.DSAssignment.messaging;
+package com.DSAssignment.FriendZone.DataStructures;
 
 public class ListNode<T> {
     private T node;

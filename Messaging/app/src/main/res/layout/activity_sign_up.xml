@@ -5,9 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#DEEAF4"
-    tools:context=".userLogInStuff.login">
+    tools:context=".userLogInStuff.SignUp">
+
+
     <EditText
-        android:id="@+id/editTextForEmail"
+        android:id="@+id/editTextForEmail2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
@@ -20,14 +22,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.303"
-        android:autofillHints="" />
-
+        android:importantForAutofill="no" />
 
     <EditText
-        android:id="@+id/editTextForPassword"
+        android:id="@+id/editTextForPassword2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="340dp"
+        android:layout_marginBottom="15dp"
         android:ems="10"
         android:hint="@string/password"
         android:inputType="textPassword"
@@ -35,37 +36,53 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.439"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextForEmail"
+        app:layout_constraintTop_toBottomOf="@+id/editTextForEmail2"
         app:layout_constraintVertical_bias="0.0"
         android:autofillHints="" />
 
+
     <Button
-        android:id="@+id/buttonForLogIn"
+        android:id="@+id/buttonForSignIn2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="116dp"
-        android:text="@string/log_in"
+        android:layout_marginBottom="15dp"
+        android:text="@string/register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.442"
+        app:layout_constraintHorizontal_bias="0.461"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextForPassword"
-        app:layout_constraintVertical_bias="0.175" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextForPasswordConfirmation2"
+        app:layout_constraintVertical_bias="0.159" />
 
     <TextView
-        android:id="@+id/textViewSignUp"
+        android:id="@+id/textViewLogin2"
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:text="@string/haven_t_registered_sign_up_here"
+        android:layout_marginBottom="264dp"
+        android:text="@string/already_registered_log_in_here"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonForLogIn" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonForSignIn2"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/editTextForPasswordConfirmation2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/confirm_your_password"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.439"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextForPassword2"
+        android:autofillHints="" />
 
     <TextView
-        android:id="@+id/textViewDescription"
+        android:id="@+id/textViewDescription3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
@@ -79,7 +96,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textViewDescription2"
+        android:id="@+id/textViewDescription4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="84dp"
@@ -88,17 +105,19 @@
         android:text="@string/your_first_choice_dating_app"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewDescription3" />
+
 
     <TextView
         android:id="@+id/textViewSignInOtherAcc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="24dp"
 
         android:text="@string/sign_in_with_tantan_account"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewSignUp" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewLogin2" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

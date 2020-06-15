@@ -1,10 +1,12 @@
-package com.DSAssignment.messaging;
+package com.DSAssignment.FriendZone.Messaging;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.DSAssignment.FriendZone.DataStructures.Queue;
+import com.DSAssignment.FriendZone.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -73,7 +75,9 @@ public class MainActivity extends AppCompatActivity {
                 EditText input=findViewById(R.id.edittext_chatbox);
                 String contentInput=input.getText().toString();
                 Calendar calendar=Calendar.getInstance(Locale.getDefault());
-                String time=new SimpleDateFormat("HH:mm").format(calendar.getTime());;
+                String time=new SimpleDateFormat("HH:mm").format(calendar.getTime());
+                encryption encrypt=new encryption();
+                contentInput=encrypt.changeWord(contentInput);
                 q.enqueue(contentInput,currentUser,time,null);
                 database.collection("chats").document(chatID).set(q.peek()).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

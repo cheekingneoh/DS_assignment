@@ -1,4 +1,4 @@
-package com.DSAssignment.messaging;
+package com.DSAssignment.FriendZone.Messaging;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,11 +12,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.DSAssignment.FriendZone.DataStructures.Queue;
+import com.DSAssignment.FriendZone.R;
+
 public class MessageListAdapter extends RecyclerView.Adapter {
     private Queue q;
     private Context c;
     private String senderID="sender";
     private String User;
+    private encryption decrypt=new encryption();
 
 
     public MessageListAdapter(Context b,Queue a,String user){
@@ -74,7 +78,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
 
         public void bind(messages temp){
-            content.setText(temp.getContent());
+            content.setText(decrypt.encrp(temp.getContent()));
             time.setText(temp.getTime());
         }
     }
@@ -92,7 +96,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         public void bind(messages temp){
             name.setText(temp.getSenderID());
-            content.setText(temp.getContent());
+            content.setText(decrypt.encrp(temp.getContent()));
             time.setText(temp.getTime());
             profilePic.setImageResource(R.drawable.default_profile_pic);
         }

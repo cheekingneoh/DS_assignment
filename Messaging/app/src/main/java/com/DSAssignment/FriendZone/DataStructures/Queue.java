@@ -1,7 +1,7 @@
-package com.DSAssignment.messaging;
-import androidx.annotation.NonNull;
+package com.DSAssignment.FriendZone.DataStructures;
 
-import com.DSAssignment.messaging.messages;
+import com.DSAssignment.FriendZone.Messaging.messages;
+
 public class Queue<T> {
     private messages head;
 

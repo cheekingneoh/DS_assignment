@@ -1,4 +1,4 @@
-package com.DSAssignment.messaging;
+package com.DSAssignment.FriendZone;
 
 import org.junit.Test;
 
