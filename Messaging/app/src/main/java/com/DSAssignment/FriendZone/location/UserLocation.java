@@ -1,21 +1,25 @@
 package com.DSAssignment.FriendZone.location;
 
-import com.DSAssignment.FriendZone.userLogInStuff.User;
+import com.DSAssignment.FriendZone.userLogInStuff.userInfo;
 
-public class UserLocation extends User {
+public class UserLocation extends userInfo {
 
     double latitude;
     double longitude;
     String name;
+    String id;
+    String gender;
 
     public UserLocation(){
 
     }
 
-    public UserLocation(double latitude, double longitude, String name) {
+    public UserLocation(double latitude, double longitude, String name, String id, String gender) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.id = id;
+        this.gender = gender;
     }
 
     public double getLatitude() {
@@ -28,5 +32,13 @@ public class UserLocation extends User {
 
     public String getName() {
         return name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getGender() {
+        return gender;
     }
 }

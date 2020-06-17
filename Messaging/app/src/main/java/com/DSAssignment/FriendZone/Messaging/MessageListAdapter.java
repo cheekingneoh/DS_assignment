@@ -21,12 +21,14 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     private String senderID="sender";
     private String User;
     private encryption decrypt=new encryption();
+    String OtherName;
 
 
-    public MessageListAdapter(Context b,Queue a,String user){
+    public MessageListAdapter(Context b,Queue a,String user, String n){
         this.q=a;
         this.c=b;
         this.User=user;
+        OtherName=n;
         Log.d("user",q.toString());
     }
 
@@ -95,7 +97,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
 
         public void bind(messages temp){
-            name.setText(temp.getSenderID());
+            name.setText(OtherName);
             content.setText(decrypt.encrp(temp.getContent()));
             time.setText(temp.getTime());
             profilePic.setImageResource(R.drawable.default_profile_pic);

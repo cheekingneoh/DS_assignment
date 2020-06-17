@@ -1,5 +1,7 @@
 package com.DSAssignment.FriendZone.DataStructures;
 
+import android.util.Log;
+
 public class LinkedList<T> {
     ListNode head;
 
@@ -7,7 +9,7 @@ public class LinkedList<T> {
         head=null;
     }
 
-    public void insert(T t){
+    public void add(T t){
         ListNode addition=new ListNode(t,null);
         if(head==null){
             head=addition;
@@ -38,7 +40,7 @@ public class LinkedList<T> {
         }
     }
 
-    public int getSize(){
+    public int size(){
         int counter=0;
         if(head==null){
             return counter;
@@ -59,16 +61,43 @@ public class LinkedList<T> {
             return null;
         }
         else{
-            if(a>(getSize()-1)){
+            if(a>(size()-1)){
                 return null;
             }
-            else{
+            else if(a<size()){
                 ListNode currentNode=head;
                 while(count!=a){
                     currentNode=currentNode.getLink();
+                    count++;
                 }
                 return (T)currentNode.getContent();
             }
+            else{
+                return null;
+            }
+        }
+    }
+
+    public void set(int a, T b){
+        if(a==0){
+            ListNode addition=new ListNode(b,head.getLink());
+            head=addition;
+        }
+        else if(a== size()){
+            add(b);
+        }
+        else if(a> size()){
+            Log.d("Error with insert","Invalid index");
+        }
+        else{
+            ListNode addition=new ListNode(b,null);
+            ListNode currentNode=head;
+            for(int i=0;i<a;i++){
+                currentNode=currentNode.getLink();
+            }
+            ListNode temp=currentNode.getLink();
+            currentNode.setLink(addition);
+            addition.setLink(temp);
         }
     }
 }

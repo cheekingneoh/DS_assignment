@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.DSAssignment.FriendZone.location.FindUser;
 import com.DSAssignment.FriendZone.location.contacts;
 import com.DSAssignment.FriendZone.Messaging.storeWord;
 import com.DSAssignment.FriendZone.R;
@@ -130,7 +131,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
                                 if (dataSnapshot.child(uniqueID).exists()) {
                                     finish();
-                                    startActivity(new Intent(login.this, contacts.class));
+                                    startActivity(new Intent(login.this, FindUser.class));
 
                                 } else {
                                     finish();

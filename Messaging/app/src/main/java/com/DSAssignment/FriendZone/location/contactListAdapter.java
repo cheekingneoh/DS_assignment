@@ -21,10 +21,12 @@ public class contactListAdapter extends RecyclerView.Adapter {
     private TextView name;
     private TextView lastMessage;
     private ImageView profilePicture;
+    private OnCardListener onCardListener;
 
-    public contactListAdapter(LinkedList l, Context c){
+    public contactListAdapter(LinkedList l, Context c,OnCardListener onCardListener){
         this.ls=l;
         this.c=c;
+        this.onCardListener=onCardListener;
     }
 
     @NonNull
@@ -32,27 +34,43 @@ public class contactListAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater=LayoutInflater.from(c);
         View view=inflater.inflate(R.layout.contact_card,parent,false);
-        return new contactCard(view);
+        return new contactCard(view, onCardListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        contactCardInfo temp=(contactCardInfo)ls.get(position);
+        contactsFound temp=(contactsFound) ls.get(position);
         name.setText(temp.getName());
-        lastMessage.setText(temp.getLastMessage());
+        lastMessage.setText(temp.getGender());
+        profilePicture.setImageResource(R.drawable.default_profile_pic);
     }
 
-    public class contactCard extends RecyclerView.ViewHolder{
-        public contactCard(@NonNull View itemView) {
+    public class contactCard extends RecyclerView.ViewHolder implements View.OnClickListener{
+        OnCardListener onCardListener;
+
+        public contactCard(@NonNull View itemView,OnCardListener onCardListener) {
             super(itemView);
             name=itemView.findViewById(R.id.contact_name);
             lastMessage=itemView.findViewById(R.id.last_message);
             profilePicture=itemView.findViewById(R.id.profile_picture);
+            this.onCardListener=onCardListener;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            onCardListener.onCardClick(getAdapterPosition());
         }
     }
 
     @Override
     public int getItemCount() {
-        return ls.getSize();
+        return ls.size();
     }
+
+    public interface OnCardListener{
+        void onCardClick(int position);
+    }
+
 }
+

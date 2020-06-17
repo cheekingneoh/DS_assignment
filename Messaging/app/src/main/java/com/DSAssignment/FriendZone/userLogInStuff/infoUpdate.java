@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.DSAssignment.FriendZone.location.FindUser;
 import com.DSAssignment.FriendZone.location.UserLocation;
 import com.DSAssignment.FriendZone.location.contacts;
 import com.DSAssignment.FriendZone.R;
@@ -36,6 +37,13 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class infoUpdate extends AppCompatActivity implements View.OnClickListener {
     Spinner spinner;
+    Spinner spinnerSport;
+    Spinner spinnerMovie;
+    Spinner spinnerMusic;
+    Spinner spinnerBook;
+    Spinner spinnerFood;
+    Spinner spinnerTravel;
+    Spinner spinnerGenderInterested;
     ArrayAdapter adapter;
     Button button;
     ImageView imageView;
@@ -67,6 +75,13 @@ public class infoUpdate extends AppCompatActivity implements View.OnClickListene
 
 
        spinner=findViewById(R.id.genderSpinner);
+       spinnerSport=findViewById(R.id.sportSpinner);
+       spinnerMovie=findViewById(R.id.movieSpinner);
+       spinnerMusic=findViewById(R.id.musicSpinner);
+       spinnerBook=findViewById(R.id.bookSpinner);
+       spinnerFood=findViewById(R.id.foodSpinner);
+       spinnerTravel=findViewById(R.id.travelSpinner);
+       spinnerGenderInterested=findViewById(R.id.genderInterestedSpinner);
 //        adapter=ArrayAdapter.createFromResource(this,R.array.gen,android.R.layout.simple_spinner_item);
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        spinner.setAdapter(adapter);
@@ -113,8 +128,13 @@ public class infoUpdate extends AppCompatActivity implements View.OnClickListene
 
         String gender=spinner.getSelectedItem().toString();
         String describe=editTextDescription.getText().toString();
-
-
+        String sport=spinnerSport.getSelectedItem().toString();
+        String movie=spinnerMovie.getSelectedItem().toString();
+        String music=spinnerMusic.getSelectedItem().toString();
+        String book=spinnerBook.getSelectedItem().toString();
+        String food=spinnerFood.getSelectedItem().toString();
+        String travel=spinnerTravel.getSelectedItem().toString();
+        String genderInterested=spinnerGenderInterested.getSelectedItem().toString();
 
         if(TextUtils.isEmpty(name)){
             editTextName.setError("Cannot be empty");
@@ -134,8 +154,9 @@ public class infoUpdate extends AppCompatActivity implements View.OnClickListene
         }
 
         int age=Integer.parseInt(ageString);
-
-        userInfo info=new userInfo(userEmail,age,gender,describe);
+        FirebaseUser user2=auth.getCurrentUser();
+        String id=user2.getUid().toString();
+        userInfo info=new userInfo(name,id,userEmail,age,gender,describe,sport,movie,music,book,food,travel,genderInterested);
 
 
         dialog.setMessage("Saving");
@@ -148,7 +169,7 @@ public class infoUpdate extends AppCompatActivity implements View.OnClickListene
                 dialog.dismiss();
                 if(task.isSuccessful()){
                     Toast.makeText(infoUpdate.this,"Updated.",Toast.LENGTH_SHORT).show();
-//                    startActivity(new Intent(infoUpdate.this, contacts.class));
+                    startActivity(new Intent(infoUpdate.this, FindUser.class));
                 }
                 else
                     Toast.makeText(infoUpdate.this,"Failed.",Toast.LENGTH_SHORT).show();

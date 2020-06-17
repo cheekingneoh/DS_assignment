@@ -31,12 +31,14 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView MessageRecycler;
     MessageListAdapter MessageAdapter;
     Queue messageList=new Queue();
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         String otherEndUid=getIntent().getStringExtra("OtherUID");
+        name=getIntent().getStringExtra("name");
         Log.d("Testing",otherEndUid);
 
         FirebaseAuth auth=FirebaseAuth.getInstance();
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 q.setHead(documentSnapshot.toObject(messages.class));
                 Log.d("plz be the problem",q.toString());
                 MessageRecycler = findViewById(R.id.reyclerview_message_list);
-                MessageAdapter = new MessageListAdapter(MainActivity.this,q,currentUser);
+                MessageAdapter = new MessageListAdapter(MainActivity.this,q,currentUser,name);
                 MessageRecycler.setAdapter(MessageAdapter);
                 MessageRecycler.setLayoutManager(new LinearLayoutManager(MainActivity.this));
             }
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 });
                 input.setText("");
                 MessageRecycler = findViewById(R.id.reyclerview_message_list);
-                MessageAdapter = new MessageListAdapter(MainActivity.this,q,currentUser);
+                MessageAdapter = new MessageListAdapter(MainActivity.this,q,currentUser,name);
                 MessageRecycler.setAdapter(MessageAdapter);
                 MessageRecycler.setLayoutManager(new LinearLayoutManager(MainActivity.this));
             }
@@ -98,14 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //testing the chat interface
-//        messageList.enqueue("hi there","Olaf","8:29",null);
-//        messageList.enqueue("Plz work","Olaf","8:29",null);
-//        messageList.enqueue("yes?","sender","8:29",null);
 
-//        MessageRecycler = findViewById(R.id.reyclerview_message_list);
-//        MessageAdapter = new MessageListAdapter(MainActivity.this,q,currentUser);
-//        MessageRecycler.setAdapter(MessageAdapter);
-//        MessageRecycler.setLayoutManager(new LinearLayoutManager(MainActivity.this));
     }
 }
