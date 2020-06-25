@@ -1,6 +1,8 @@
 package com.DSAssignment.FriendZone.location;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.DSAssignment.FriendZone.DataStructures.LinkedList;
 import com.DSAssignment.FriendZone.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 
 public class contactListAdapter extends RecyclerView.Adapter {
@@ -42,7 +48,23 @@ public class contactListAdapter extends RecyclerView.Adapter {
         contactsFound temp=(contactsFound) ls.get(position);
         name.setText(temp.getName());
         lastMessage.setText(temp.getGender());
-        profilePicture.setImageResource(R.drawable.default_profile_pic);
+        FirebaseStorage storage=FirebaseStorage.getInstance();
+        StorageReference profilePIC=storage.getReference().child(temp.getUid());
+        final long ONE_MEGABYTE=1024*1024;
+        profilePIC.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap image= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                profilePicture.setImageBitmap(image);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                profilePicture.setImageResource(R.drawable.default_profile_pic);
+            }
+        });
+
+
     }
 
     public class contactCard extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -51,7 +73,7 @@ public class contactListAdapter extends RecyclerView.Adapter {
         public contactCard(@NonNull View itemView,OnCardListener onCardListener) {
             super(itemView);
             name=itemView.findViewById(R.id.contact_name);
-            lastMessage=itemView.findViewById(R.id.last_message);
+            lastMessage=itemView.findViewById(R.id.weightage_Display);
             profilePicture=itemView.findViewById(R.id.profile_picture);
             this.onCardListener=onCardListener;
             itemView.setOnClickListener(this);

@@ -7,10 +7,12 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,6 +36,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 
 public class infoUpdate extends AppCompatActivity implements View.OnClickListener {
@@ -56,10 +61,10 @@ public class infoUpdate extends AppCompatActivity implements View.OnClickListene
     DatabaseReference ref;
     ProgressDialog dialog;
     FirebaseUser user;
+    Uri uri;
+    FirebaseStorage firebaseStorage;
+    StorageReference storageReference;
 
-    private LocationManager locationManager;
-    private LocationListener locationListener;
-    private DatabaseReference databaseLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +75,8 @@ public class infoUpdate extends AppCompatActivity implements View.OnClickListene
         database= FirebaseDatabase.getInstance();
         ref=database.getInstance().getReference();
         user=auth.getCurrentUser();
-        databaseLocation= FirebaseDatabase.getInstance().getReference("UserLocation");
+        firebaseStorage=FirebaseStorage.getInstance();
+        storageReference=firebaseStorage.getReference();
 
 
 
@@ -101,13 +107,13 @@ public class infoUpdate extends AppCompatActivity implements View.OnClickListene
     public void onClick(View v) {
         if (v==button){
             saveInfo();
-            startActivity(new Intent(infoUpdate.this, contacts.class));
+            startActivity(new Intent(infoUpdate.this, FindUser.class));
         }
 
         else if (v==imageView){
                     Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
                     intent.setType("image/*");
-                    startActivity(intent);
+                    startActivityForResult(intent, 1);
         }
 
 
@@ -115,13 +121,16 @@ public class infoUpdate extends AppCompatActivity implements View.OnClickListene
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1){
+            uri=data.getData();
+            imageView.setImageURI(uri);
+        }
+    }
+
     public void saveInfo(){
-//
-//        auth=FirebaseAuth.getInstance();
-//        database=FirebaseDatabase.getInstance();
-//        ref=FirebaseDatabase.getInstance().getReference().child("User");
-//        user=auth.getCurrentUser();
-        //String userID=user.getUid();
         String userEmail=user.getEmail();
         String name=editTextName.getText().toString();
         String ageString=editTextAge.getText().toString();
@@ -157,24 +166,28 @@ public class infoUpdate extends AppCompatActivity implements View.OnClickListene
         FirebaseUser user2=auth.getCurrentUser();
         String id=user2.getUid().toString();
         userInfo info=new userInfo(name,id,userEmail,age,gender,describe,sport,movie,music,book,food,travel,genderInterested);
+        if(uri!=null) {
+            Log.d("happen","this happened");
+            storageReference.child(auth.getCurrentUser().getUid()).putFile(uri);
+        }
 
 
         dialog.setMessage("Saving");
         dialog.show();
         FirebaseUser user=auth.getCurrentUser();
-
         ref.child("User").child(user.getUid().toString()).setValue(info).addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 dialog.dismiss();
-                if(task.isSuccessful()){
-                    Toast.makeText(infoUpdate.this,"Updated.",Toast.LENGTH_SHORT).show();
+                if (task.isSuccessful()) {
+                    Log.d("URI",Boolean.toString(uri==null));
+                    Toast.makeText(infoUpdate.this, "Updated.", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(infoUpdate.this, FindUser.class));
-                }
-                else
-                    Toast.makeText(infoUpdate.this,"Failed.",Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(infoUpdate.this, "Failed.", Toast.LENGTH_SHORT).show();
             }
         });
+
 
 
     }

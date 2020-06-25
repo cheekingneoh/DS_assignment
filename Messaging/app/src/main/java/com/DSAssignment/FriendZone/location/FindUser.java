@@ -1,17 +1,26 @@
 package com.DSAssignment.FriendZone.location;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import com.DSAssignment.FriendZone.R;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -65,6 +74,7 @@ public class FindUser extends AppCompatActivity {
     String[] gender;
     int count;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,11 +82,12 @@ public class FindUser extends AppCompatActivity {
         Button button=findViewById(R.id.button2);
         final TextView textView=findViewById(R.id.textView3);
         final TextView textView3=findViewById(R.id.textView5);
+        final TextView textView1= findViewById(R.id.weightage_Display);
         databaseUser = FirebaseDatabase.getInstance().getReference().child("UserLocation");
         databaseUser2 = FirebaseDatabase.getInstance().getReference().child("User");
         auth=FirebaseAuth.getInstance();
         currentUserId=auth.getCurrentUser().getUid();
-        Log.d("problem here","PLZ");
+        setUserLocation();
 
         databaseUser.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -102,19 +113,11 @@ public class FindUser extends AppCompatActivity {
                 collectId((Map<String,Object>) dataSnapshot.getValue());
                 collectGender((Map<String,Object>) dataSnapshot.getValue());
                 calcDistance(latitudeList,longitudeList);
-                Log.d("how many times","test");
                 double currentSearch=100.0;
                 count=0;
                 while(currentSearch!=MAX){
                     for(int i=0;i<distance.size();i++){
-                        Log.d("how many loops","test");
                         if((Double)distance.get(i)<currentSearch){
-                            Log.d("Loop problem",Integer.toString(i));
-                            Log.d("Loop Problem",Integer.toString(distance.size()));
-                            Log.d("LoopName Problem",Integer.toString(nameList.size()));
-                            Log.d("LoopID Problem",Integer.toString(idList.size()));
-                            Log.d("LoopGender Problem",Integer.toString(genderList.size()));
-                            Log.d("Loop Problem",distance.toString());
                             nameNearby.add(nameList.get(i));
                             idNearby.add(idList.get(i));
                             genderNearby.add(genderList.get(i));
@@ -175,7 +178,6 @@ public class FindUser extends AppCompatActivity {
                         collectFood((Map<String,Object>) dataSnapshot.getValue());
                         collectTravel((Map<String,Object>) dataSnapshot.getValue());
                         findCharacteristic(sportList,movieList,musicList,bookList,foodList,travelList);
-                        Log.d("problem", "onDataChange: ");
                         if(weightage.size()!=0){
                             bubbleSort();
                             count=0;
@@ -184,8 +186,8 @@ public class FindUser extends AppCompatActivity {
                                 if(filter.get(i)){
                                     textView.append("\n"+nameNearby.get(i));
                                     textView3.append("\n"+genderNearby.get(i));
+                                    textView1.append("\n"+weightage.get(i));
                                     contactsFound addition=new contactsFound(nameNearby.get(i), idNearby.get(i),genderNearby.get(i));
-                                    Log.d("maybe problem here",Integer.toString(found.size()));
                                     name[counter]=nameNearby.get(i);
                                     uid[counter]=idNearby.get(i);
                                     gender[counter]=genderNearby.get(i);
@@ -201,7 +203,6 @@ public class FindUser extends AppCompatActivity {
 
                     }
                 });
-                Log.d("maybe problem here",Integer.toString(found.size()));
 
 
             }
@@ -211,7 +212,7 @@ public class FindUser extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent change=new Intent(getApplicationContext(),contacts.class);
-                Log.d("PLZ be solved",Integer.toString(name.length));
+                Log.d("problematic",Integer.toString(count));
                 change.putExtra("count",count);
                 change.putExtra("name",name);
                 change.putExtra("uid",uid);
@@ -328,7 +329,7 @@ public class FindUser extends AppCompatActivity {
     }
 
     private void findCharacteristic(LinkedList sportList, LinkedList movieList, LinkedList musicList, LinkedList bookList, LinkedList foodList, LinkedList travelList){
-        for(int i=0;i<sportList.size();i++){
+        for(int i=0;i<idList.size();i++){
             boolean isNearbyId=false;
             for(int j=0;j<idNearby.size();j++){
                 if(idList.get(i).equals(idNearby.get(j))){
@@ -361,6 +362,8 @@ public class FindUser extends AppCompatActivity {
         }
         for(int k=0;k<genderNearby.size();k++){
             if(genderNearby.get(k).equals(currentgenderInterested)){
+                filter.add(true);
+            }else if(currentgenderInterested.equals("Prefer not to say")){
                 filter.add(true);
             }
             else{
@@ -395,6 +398,112 @@ public class FindUser extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private LocationListener locationListener;
+    private LocationManager locationManager;
+    private DatabaseReference databaseLocation;
+    String UserName;
+    String UserGender;
+    String UserId;
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void setUserLocation(){
+        databaseLocation= FirebaseDatabase.getInstance().getReference().child("UserLocation");
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                FirebaseAuth auth=FirebaseAuth.getInstance();
+                FirebaseUser FireUser=auth.getCurrentUser();
+                String id=FireUser.getUid().toString();
+                UserLocation userLocation=new UserLocation(location.getLatitude(),location.getLongitude(),getName(),getId(),getGender());
+                databaseLocation.child(id).setValue(userLocation);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Intent intent=new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        };
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.INTERNET
+            },10);
+            return;
+        }
+        locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
+    }
+
+    public String getName(){
+
+        FirebaseAuth auth=FirebaseAuth.getInstance();
+        FirebaseUser user=auth.getCurrentUser();
+        String uid=user.getUid();
+        DatabaseReference userDatabase= FirebaseDatabase.getInstance().getReference().child("User");
+        userDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserName=dataSnapshot.child("name").getValue(String.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return UserName;
+    }
+
+    public String getGender(){
+
+        FirebaseAuth auth=FirebaseAuth.getInstance();
+        FirebaseUser user=auth.getCurrentUser();
+        String uid=user.getUid();
+        DatabaseReference userDatabase=FirebaseDatabase.getInstance().getReference().child("User");
+        userDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserGender=dataSnapshot.child("gender").getValue(String.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return UserGender;
+    }
+
+    public String getId(){
+
+        FirebaseAuth auth=FirebaseAuth.getInstance();
+        FirebaseUser user=auth.getCurrentUser();
+        String uid=user.getUid();
+        DatabaseReference userDatabase=FirebaseDatabase.getInstance().getReference().child("User");
+        userDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserId=dataSnapshot.child("id").getValue(String.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return UserId;
     }
 
 }

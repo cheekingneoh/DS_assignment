@@ -16,7 +16,7 @@ public class LinkedList<T> {
         }
         else{
             ListNode currentNode=head;
-            if(currentNode.getLink()!=null){
+            while(currentNode.getLink()!=null){
                 currentNode =currentNode.getLink();
             }
             currentNode.setLink(addition);

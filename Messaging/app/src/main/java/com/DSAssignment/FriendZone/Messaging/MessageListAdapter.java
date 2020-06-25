@@ -20,15 +20,18 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     private Context c;
     private String senderID="sender";
     private String User;
-    private encryption decrypt=new encryption();
-    String OtherName;
+    private encryption decrypt;
+    private String OtherName;
+    private String chatId;
 
 
-    public MessageListAdapter(Context b,Queue a,String user, String n){
+    public MessageListAdapter(Context b,Queue a,String user, String n, String chatID){
         this.q=a;
         this.c=b;
         this.User=user;
         OtherName=n;
+        chatId=chatID;
+        decrypt=new encryption(chatId);
         Log.d("user",q.toString());
     }
 

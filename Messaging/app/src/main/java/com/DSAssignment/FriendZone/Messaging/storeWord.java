@@ -9,6 +9,10 @@ public class storeWord {
         createHash();
     }
 
+    public static HashTable<String, String> getHT() {
+        return HT;
+    }
+
     public static void createHash(){
         HT.put("alive","dead");
         HT.put("beautiful","ugly");
